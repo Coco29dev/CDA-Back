@@ -6,7 +6,7 @@ const sequelize = require('./config/database');
 const app = express();
 
 app.use(cors({
-  origin: '*',
+  origin: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
