@@ -19,6 +19,10 @@
         "/api/v1/blagues": {
             "get": {
                 "summary": "Récupérer toutes les blagues",
+                "description": "Renvoie la liste complète des blagues disponibles",
+                "tags": [
+                    "Blague"
+                ],
                 "responses": {
                     "200": {
                         "description": "Liste de toutes les blagues",
@@ -32,11 +36,18 @@
                                 }
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
                     }
                 }
             },
             "post": {
                 "summary": "Ajouter une nouvelle blague",
+                "description": "Crée une nouvelle blague dans la base de données",
+                "tags": [
+                    "Blague"
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -52,16 +63,32 @@
                                 "required": [
                                     "content"
                                 ]
+                            },
+                            "example": {
+                                "content": "Pourquoi les plongeurs plongent-ils toujours en arrière et jamais en avant ? Parce que sinon ils tombent dans le bateau !"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Blague créée avec succès"
+                        "description": "Blague créée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Blague"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Blague sans texte"
                     },
                     "409": {
                         "description": "Blague déjà existante"
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
                     }
                 }
             }
@@ -69,6 +96,10 @@
         "/api/v1/blagues/random": {
             "get": {
                 "summary": "Récupérer une blague aléatoire",
+                "description": "Renvoie une blague aléatoire parmi toutes les blagues disponibles",
+                "tags": [
+                    "Blague"
+                ],
                 "responses": {
                     "200": {
                         "description": "Une blague aléatoire",
@@ -82,6 +113,9 @@
                     },
                     "404": {
                         "description": "Aucune blague trouvée"
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
                     }
                 }
             }
@@ -89,6 +123,10 @@
         "/api/v1/blagues/{id}": {
             "get": {
                 "summary": "Récupérer une blague par son ID",
+                "description": "Renvoie une blague spécifique en fonction de son ID",
+                "tags": [
+                    "Blague"
+                ],
                 "parameters": [
                     {
                         "name": "id",
@@ -113,6 +151,104 @@
                     },
                     "404": {
                         "description": "Blague non trouvée"
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Mettre à jour une blague",
+                "description": "Modifie le contenu d'une blague existante",
+                "tags": [
+                    "Blague"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID de la blague à modifier"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "description": "Nouveau contenu de la blague"
+                                    }
+                                },
+                                "required": [
+                                    "content"
+                                ]
+                            },
+                            "example": {
+                                "content": "Que fait une fraise sur un cheval ? Tagada Tagada !"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Blague mise à jour avec succès"
+                    },
+                    "404": {
+                        "description": "Blague inexistante"
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
+                    }
+                }
+            }
+        },
+        "/api/v1/blagues/delete/{id}": {
+            "delete": {
+                "summary": "Supprimer une blague",
+                "description": "Supprime une blague spécifique en fonction de son ID",
+                "tags": [
+                    "Blague"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "ID de la blague à supprimer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blague supprimée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Blague supprimée"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blague inexistante"
+                    },
+                    "500": {
+                        "description": "Erreur serveur"
                     }
                 }
             }
@@ -130,9 +266,31 @@
                     "content": {
                         "type": "string",
                         "description": "Contenu de la blague"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date de création de la blague"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date de dernière modification de la blague"
                     }
+                },
+                "example": {
+                    "id": 1,
+                    "content": "Quel est le comble pour un électricien ? De ne pas être au courant !",
+                    "createdAt": "2023-07-15T14:30:00Z",
+                    "updatedAt": "2023-07-15T14:30:00Z"
                 }
             }
         }
-    }
+    },
+    "tags": [
+        {
+            "name": "Blague",
+            "description": "Opérations sur les blagues"
+        }
+    ]
 }
