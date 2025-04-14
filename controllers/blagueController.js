@@ -8,7 +8,7 @@ exports.createBlague = async (req, res) => {
     }
     const blagueExistante = await Blague.findOne({
       where: {
-        id: req.params.id
+        content: req.body.content
       }
     });
     if (blagueExistante) {
@@ -32,7 +32,7 @@ exports.getAllBlague = async (req, res) => {
 
 exports.getBlagueID = async (req, res) => {
   try {
-    const blague = await Blague.findByPk({ id: req.params.id });
+    const blague = await Blague.findByPk(req.params.id);
     if (!blague) {
       return res.status(404).json({ message: 'Blague inexistante' });
     }
